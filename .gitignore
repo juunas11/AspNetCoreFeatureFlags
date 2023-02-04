@@ -1,0 +1,6 @@
+﻿.vs
+src/publish_output
+bin
+obj
+deployment/config.json
+src/WebPublish.zip
