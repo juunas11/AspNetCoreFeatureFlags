@@ -109,3 +109,5 @@ resource webAppConfigReaderRoleAssignment 'Microsoft.Authorization/roleAssignmen
 }
 
 output webAppName string = webApp.name
+output webAppDefaultHostName string = webApp.properties.defaultHostName
+output webAppCustomDomainVerificationId string = webApp.properties.customDomainVerificationId

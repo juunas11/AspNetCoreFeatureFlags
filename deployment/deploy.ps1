@@ -6,6 +6,7 @@ $subscriptionId = $config.subscriptionId
 $resourceGroupName = $config.resourceGroupName
 $location = $config.location
 $developerGroupId = $config.developerGroupId
+$webAppCustomDomain = $config.webAppCustomDomain
 
 az account show -s "$subscriptionId" | Out-Null
 if ($LASTEXITCODE -ne 0) {
@@ -60,3 +61,13 @@ if ($LASTEXITCODE -ne 0) {
 Pop-Location
 
 Write-Host "Deployment complete."
+
+if ($webAppCustomDomain -ne $null) {
+    $webAppDefaultHostName = $mainBicepOutputs.webAppDefaultHostName.value
+    $webAppCustomDomainVerificationId = $mainBicepOutputs.webAppCustomDomainVerificationId.value
+
+    Write-Host "To setup the custom domain, you will need these two DNS records setup:"
+    Write-Host "CNAME $webAppCustomDomain -> $webAppDefaultHostName"
+    Write-Host "TXT asuid.$webAppCustomDomain -> $webAppCustomDomainVerificationId"
+    Write-Host "Once you have set these up, run deployCustomDomain.ps1"
+}
