@@ -1,18 +1,47 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FeatureFlagsDemo.Data;
+using FeatureFlagsDemo.Extensions;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.FeatureManagement;
 
 namespace FeatureFlagsDemo.Pages;
 public class IndexModel : PageModel
 {
-    private readonly ILogger<IndexModel> _logger;
+    private readonly InMemoryUserStore _userStore;
+    private readonly IFeatureDefinitionProvider _featureDefinitionProvider;
 
-    public IndexModel(ILogger<IndexModel> logger)
+    public IndexModel(InMemoryUserStore userStore, IFeatureDefinitionProvider featureDefinitionProvider)
     {
-        _logger = logger;
+        _userStore = userStore;
+        _featureDefinitionProvider = featureDefinitionProvider;
     }
 
-    public void OnGet()
-    {
+    public Guid? UserId { get; set; }
+    public AppVersion PreferredAppVersion { get; set; }
+    public Dictionary<string, bool> OptInFeatures { get; set; } = new();
 
+    public async Task OnGetAsync()
+    {
+        var userId = HttpContext.GetUserId();
+        if (userId.HasValue && !_userStore.UserExists(userId.Value))
+        {
+            // Old cookie, in-memory user store no longer has this user
+            HttpContext.RemoveUserId();
+            return;
+        }
+
+        UserId = userId;
+        if (userId.HasValue)
+        {
+            PreferredAppVersion = _userStore.GetPreferredAppVersion(userId.Value);
+            await foreach(var definition in _featureDefinitionProvider.GetAllFeatureDefinitionsAsync())
+            {
+                var isOptInFeature = definition.EnabledFor.Any(x => x.Name == "OptIn");
+                if (isOptInFeature)
+                {
+                    var isUserOptedIn = _userStore.IsOptedInToFeature(userId.Value, definition.Name);
+                    OptInFeatures.Add(definition.Name, isUserOptedIn);
+                }
+            }
+        }
     }
 }

@@ -1,5 +1,7 @@
 using Azure.Core;
 using Azure.Identity;
+using FeatureFlagsDemo.Data;
+using FeatureFlagsDemo.FeatureFlags;
 using Microsoft.FeatureManagement;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,8 +23,13 @@ builder.Configuration.AddAzureAppConfiguration(o =>
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddAzureAppConfiguration();
-builder.Services.AddFeatureManagement();
+builder.Services.AddFeatureManagement()
+    .AddFeatureFilter<OptInFeatureFilter>()
+    .AddFeatureFilter<AppVersionFeatureFilter>();
+
+builder.Services.AddSingleton<InMemoryUserStore>();
 
 var app = builder.Build();
 
@@ -44,5 +51,6 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapRazorPages();
+app.MapControllers();
 
 app.Run();

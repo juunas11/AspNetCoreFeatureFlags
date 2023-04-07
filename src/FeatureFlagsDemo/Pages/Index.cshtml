@@ -5,14 +5,45 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Feature flag demo</h1>
 </div>
 
-<feature name="ModuleA">
-    <h2>Module A</h2>
-</feature>
 
-<feature name="ModuleB">
-    <h2>Module B</h2>
-</feature>
+@if (!Model.UserId.HasValue)
+{
+    <form asp-controller="User" asp-action="Signup" method="post">
+        <button type="submit" class="btn btn-primary">Sign up</button>
+    </form>
+}
+else
+{
+    <div>
+        <h2>Feature configuration</h2>
+        <strong>Preferred app version</strong>
+        <form asp-controller="Feature" asp-action="SetPreferredAppVersion" method="post">
+            <input type="radio" id="Stable" name="appVersion" value="Stable" checked="@(Model.PreferredAppVersion == Data.AppVersion.Stable)" /> <label for="Stable">Stable</label>
+            <input type="radio" id="Beta" name="appVersion" value="Beta" checked="@(Model.PreferredAppVersion == Data.AppVersion.Beta)" /> <label for="Beta">Beta</label>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+
+        <hr />
+
+        <strong>Opt-in features</strong>
+        <form asp-controller="Feature" asp-action="SetOptInFeatures" method="post">
+            @foreach (var (feature, optedIn) in Model.OptInFeatures)
+            {
+                <input type="checkbox" id="@feature" name="@feature" checked="@optedIn" />
+                <label for="@feature">@feature</label>
+            }
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+
+    <feature name="@Features.ModuleA">
+        <h2>Module A</h2>
+    </feature>
+
+    <feature name="@Features.ModuleB">
+        <h2>Module B</h2>
+    </feature>
+}
