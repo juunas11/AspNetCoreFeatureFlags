@@ -4,4 +4,5 @@ public static class Features
 {
     public const string ModuleA = nameof(ModuleA);
     public const string ModuleB = nameof(ModuleB);
+    public const string ModuleC = nameof(ModuleC);
 }

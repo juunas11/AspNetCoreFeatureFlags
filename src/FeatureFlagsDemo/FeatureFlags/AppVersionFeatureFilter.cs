@@ -29,18 +29,16 @@ public class AppVersionFeatureFilter : IFeatureFilter
         var userStore = httpContext.RequestServices.GetRequiredService<InMemoryUserStore>();
         var preferredVersion = userStore.GetPreferredAppVersion(userId.Value);
 
-        var isEnabled = parameters.IsAppVersionEnabled(preferredVersion);
+        var status = parameters.GetFeatureStatus(preferredVersion);
+
+        var isEnabled = status switch
+        {
+            FeatureStatus.Enabled => true,
+            FeatureStatus.OptIn => userStore.IsOptedInToFeature(userId.Value, context.FeatureName),
+            FeatureStatus.Disabled => false,
+            _ => throw new NotImplementedException(),
+        };
 
         return Task.FromResult(isEnabled);
-    }
-}
-
-public class AppVersionFeatureFilterParameters
-{
-    public List<string> Versions { get; set; } = new();
-
-    public bool IsAppVersionEnabled(AppVersion appVersion)
-    {
-        return Versions.Contains(appVersion.ToString());
     }
 }

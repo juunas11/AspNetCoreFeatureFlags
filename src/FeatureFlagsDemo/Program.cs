@@ -6,27 +6,29 @@ using Microsoft.FeatureManagement;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Configuration.AddAzureAppConfiguration(o =>
+var appConfigUri = builder.Configuration.GetValue<string>("AppConfig:Uri");
+
+if (!string.IsNullOrEmpty(appConfigUri))
 {
-    var uri = builder.Configuration.GetValue<string>("AppConfig:Uri");
+    builder.Configuration.AddAzureAppConfiguration(o =>
+    {
+        TokenCredential credential = builder.Environment.IsDevelopment()
+            ? new AzureCliCredential(new AzureCliCredentialOptions
+            {
+                TenantId = builder.Configuration.GetValue<string>("LocalDevelopmentTenantId")
+            })
+            : new ManagedIdentityCredential();
 
-    TokenCredential credential = builder.Environment.IsDevelopment()
-        ? new AzureCliCredential(new AzureCliCredentialOptions
-        {
-            TenantId = builder.Configuration.GetValue<string>("LocalDevelopmentTenantId")
-        })
-        : new ManagedIdentityCredential();
-
-    o.Connect(new Uri(uri), credential)
-        .UseFeatureFlags();
-});
+        o.Connect(new Uri(appConfigUri), credential)
+            .UseFeatureFlags();
+    });
+}
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAzureAppConfiguration();
 builder.Services.AddFeatureManagement()
-    .AddFeatureFilter<OptInFeatureFilter>()
     .AddFeatureFilter<AppVersionFeatureFilter>();
 
 builder.Services.AddSingleton<InMemoryUserStore>();
@@ -41,7 +43,10 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseAzureAppConfiguration();
+if (!string.IsNullOrEmpty(appConfigUri))
+{
+    app.UseAzureAppConfiguration();
+}
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

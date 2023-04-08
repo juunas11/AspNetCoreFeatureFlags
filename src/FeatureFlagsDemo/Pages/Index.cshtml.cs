@@ -1,5 +1,6 @@
 ﻿using FeatureFlagsDemo.Data;
 using FeatureFlagsDemo.Extensions;
+using FeatureFlagsDemo.FeatureFlags;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.FeatureManagement;
 
@@ -35,7 +36,15 @@ public class IndexModel : PageModel
             PreferredAppVersion = _userStore.GetPreferredAppVersion(userId.Value);
             await foreach(var definition in _featureDefinitionProvider.GetAllFeatureDefinitionsAsync())
             {
-                var isOptInFeature = definition.EnabledFor.Any(x => x.Name == "OptIn");
+                var filterConfig = definition.EnabledFor.FirstOrDefault(x => x.Name == "AppVersion");
+                if (filterConfig == null)
+                {
+                    continue;
+                }
+
+                var parameters = filterConfig.Parameters.Get<AppVersionFeatureFilterParameters>();
+                var featureStatus = parameters.GetFeatureStatus(PreferredAppVersion);
+                var isOptInFeature = featureStatus == FeatureStatus.OptIn;
                 if (isOptInFeature)
                 {
                     var isUserOptedIn = _userStore.IsOptedInToFeature(userId.Value, definition.Name);
