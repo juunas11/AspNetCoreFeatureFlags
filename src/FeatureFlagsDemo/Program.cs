@@ -29,7 +29,8 @@ builder.Services.AddRazorPages();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAzureAppConfiguration();
 builder.Services.AddFeatureManagement()
-    .AddFeatureFilter<AppVersionFeatureFilter>();
+    .AddFeatureFilter<AppVersionFeatureFilter>()
+    .AddFeatureFilter<UserPercentageFeatureFilter>();
 
 builder.Services.AddSingleton<InMemoryUserStore>();
 
