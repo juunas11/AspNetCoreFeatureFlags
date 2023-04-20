@@ -2,8 +2,12 @@
 
 public static class Features
 {
-    public const string ModuleA = nameof(ModuleA);
-    public const string ModuleB = nameof(ModuleB);
-    public const string ModuleC = nameof(ModuleC);
-    public const string ModuleD = nameof(ModuleD);
+    // In development, large-ish feature
+    public const string NewsSummary = nameof(NewsSummary);
+
+    // Enabled in beta for all users, stable users can opt-in
+    public const string DarkTheme = nameof(DarkTheme);
+
+    // Enabled for portion of users
+    public const string UserGreeting = nameof(UserGreeting);
 }

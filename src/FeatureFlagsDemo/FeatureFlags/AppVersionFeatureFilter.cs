@@ -27,6 +27,11 @@ public class AppVersionFeatureFilter : IFeatureFilter
         var parameters = context.Parameters.Get<AppVersionFeatureFilterParameters>() ?? new();
 
         var userStore = httpContext.RequestServices.GetRequiredService<InMemoryUserStore>();
+        if (!userStore.UserExists(userId.Value))
+        {
+            return Task.FromResult(false);
+        }
+
         var preferredVersion = userStore.GetPreferredAppVersion(userId.Value);
 
         var status = parameters.GetFeatureStatus(preferredVersion);

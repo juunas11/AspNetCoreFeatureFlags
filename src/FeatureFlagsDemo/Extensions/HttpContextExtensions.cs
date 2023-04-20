@@ -21,7 +21,7 @@ public static class HttpContextExtensions
         context.Response.Cookies.Append(UserIdCookieName, userId.ToString(), new CookieOptions
         {
             Expires = DateTimeOffset.UtcNow.AddMinutes(30),
-            HttpOnly = true,
+            HttpOnly = false,
             IsEssential = true,
             SameSite = SameSiteMode.Lax,
             Secure = true,

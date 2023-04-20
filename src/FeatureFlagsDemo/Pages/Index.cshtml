@@ -4,10 +4,7 @@
     ViewData["Title"] = "Home page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Feature flag demo</h1>
-</div>
-
+<h1 class="display-4">Feature flag demo</h1>
 
 @if (!Model.UserId.HasValue)
 {
@@ -29,29 +26,43 @@ else
         <hr />
 
         <strong>Opt-in features</strong>
-        <form asp-controller="Feature" asp-action="SetOptInFeatures" method="post">
-            @foreach (var (feature, optedIn) in Model.OptInFeatures)
-            {
-                <input type="checkbox" id="@feature" name="@feature" checked="@optedIn" />
-                <label for="@feature">@feature</label>
-            }
-            <button type="submit" class="btn btn-primary">Save</button>
-        </form>
+        @if (Model.OptInFeatures.Count == 0)
+        {
+            <p>None available at the moment.</p>
+        }
+        else
+        {
+            <form asp-controller="Feature" asp-action="SetOptInFeatures" method="post">
+                @foreach (var (feature, optedIn) in Model.OptInFeatures)
+                {
+                    <input type="checkbox" id="@feature" name="@feature" checked="@optedIn" />
+                    <label for="@feature">@feature</label>
+                }
+                <button type="submit" class="btn btn-primary">Save</button>
+            </form>
+        }
+
+        <hr />
+
+        <feature name="@FeatureFlags.Features.UserGreeting">
+            <h3>Hello @Model.UserId.Value!</h3>
+            <p>This is only visible to some users</p>
+            <br />
+            <br />
+        </feature>
+
+        <feature name="@FeatureFlags.Features.NewsSummary">
+            <h2>Latest news</h2>
+            <ul>
+                <li>Breaking News: Galactic Empire Confirms Destruction of Death Star, Blames Rogue Jedi Group</li>
+                <li>Scientists Discover New Element: Unobtainium, Capable of Defying Gravity and Revolutionizing Transportation</li>
+                <li>World Leaders Admit to Secretly Being Controlled by Extraterrestrial Overlords for Decades</li>
+                <li>Time Travel Proven Possible: Future Historians Arrive to Warn Us About Imminent Dangers of AI</li>
+                <li>Atlantis Found: Underwater City Reveals Advanced Ancient Civilization and Hidden Treasure Trove</li>
+            </ul>
+            <hr />
+        </feature>
+
+        <p>Your user id: @Model.UserId.Value</p>
     </div>
-
-    <feature name="@FeatureFlags.Features.ModuleA">
-        <h2>Module A</h2>
-    </feature>
-
-    <feature name="@FeatureFlags.Features.ModuleB">
-        <h2>Module B</h2>
-    </feature>
-
-    <feature name="@FeatureFlags.Features.ModuleC">
-        <h2>Module C</h2>
-    </feature>
-
-    <feature name="@FeatureFlags.Features.ModuleD">
-        <h2>Module D</h2>
-    </feature>
 }
