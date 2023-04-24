@@ -20,6 +20,7 @@ public class UserPercentageFeatureFilter : IFeatureFilter
         var percentage = parameters.Percentage;
         if (percentage < 0 || percentage > 100)
         {
+            // Invalid value
             return Task.FromResult(false);
         }
 
@@ -28,6 +29,16 @@ public class UserPercentageFeatureFilter : IFeatureFilter
         if (!userId.HasValue)
         {
             return Task.FromResult(false);
+        }
+
+        if (percentage == 0)
+        {
+            return Task.FromResult(false);
+        }
+
+        if (percentage == 100)
+        {
+            return Task.FromResult(true);
         }
 
         var userIdLastChar = userId.Value.ToString().Last();

@@ -21,4 +21,20 @@ public class UserController : Controller
         HttpContext.SetUserId(user.Id);
         return RedirectToPage("/Index");
     }
+
+    [HttpPost("regenerateid")]
+    public IActionResult RegenerateId()
+    {
+        var userId = HttpContext.GetUserId();
+        if (!userId.HasValue)
+        {
+            return RedirectToPage("/Index");
+        }
+
+        _userStore.RemoveUser(userId.Value);
+
+        var user = _userStore.CreateNewUser();
+        HttpContext.SetUserId(user.Id);
+        return RedirectToPage("/Index");
+    }
 }

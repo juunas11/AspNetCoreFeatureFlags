@@ -31,11 +31,11 @@ $deploymentName = Get-Date -Format "yyyy-MM-dd-HH-mm-ss"
 Write-Host "Starting deployment..."
 
 Write-Host "Running customDomain.bicep deployment..."
-$customDomainBicepResult = az deployment group create --subscription "$subscriptionId" -g "$resourceGroupName" -f "customDomain.bicep" -n "$deploymentName-CustomDomain" --mode "Incremental"`
+az deployment group create --subscription "$subscriptionId" -g "$resourceGroupName" -f "customDomain.bicep" -n "$deploymentName-CustomDomain" --mode "Incremental"`
     -p "@customDomain.parameters.json" `
     -p appServicePlanName=$appServicePlanName `
     -p webAppName=$webAppName `
-    -p customDomain=$webAppCustomDomain | ConvertFrom-Json
+    -p customDomain=$webAppCustomDomain
 if ($LASTEXITCODE -ne 0) {
     Exit
 }

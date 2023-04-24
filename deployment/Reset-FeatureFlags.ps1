@@ -42,22 +42,25 @@ foreach ($feature in $features) {
 }
 
 Write-Host "Adding feature filters..."
-az appconfig feature filter add --feature "DarkTheme" --filter-name "AppVersion" --filter-parameters 'Versions={\"Stable\":\"OptIn\",\"Beta\":\"Enabled\"}' -n $appConfigName --auth-mode login --yes --subscription $subscriptionId | Out-Null
+az appconfig feature filter add --feature "DarkTheme" --filter-name "AppVersion" --filter-parameters 'Versions={\"Stable\":\"Disabled\",\"Beta\":\"OptIn\"}' -n $appConfigName --auth-mode login --yes --subscription $subscriptionId | Out-Null
 if ($LASTEXITCODE -ne 0) {
     Exit
 }
 
-az appconfig feature filter add --feature "UserGreeting" --filter-name "UserPercentage" --filter-parameters 'Percentage=30' -n $appConfigName --auth-mode login --yes --subscription $subscriptionId | Out-Null
+az appconfig feature filter add --feature "UserGreeting" --filter-name "UserPercentage" --filter-parameters 'Percentage=0' -n $appConfigName --auth-mode login --yes --subscription $subscriptionId | Out-Null
 if ($LASTEXITCODE -ne 0) {
     Exit
 }
 
 Write-Host "Enabling features..."
-foreach ($feature in $features) {
-    az appconfig feature enable --feature $feature -n $appConfigName --auth-mode login --yes --subscription $subscriptionId | Out-Null
-    if ($LASTEXITCODE -ne 0) {
-        Exit
-    }
+az appconfig feature enable --feature "DarkTheme" -n $appConfigName --auth-mode login --yes --subscription $subscriptionId | Out-Null
+if ($LASTEXITCODE -ne 0) {
+    Exit
+}
+
+az appconfig feature enable --feature "UserGreeting" -n $appConfigName --auth-mode login --yes --subscription $subscriptionId | Out-Null
+if ($LASTEXITCODE -ne 0) {
+    Exit
 }
 
 Write-Host "Feature reset done"

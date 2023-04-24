@@ -16,6 +16,11 @@ public class InMemoryUserStore
         return _users.ContainsKey(userId);
     }
 
+    public void RemoveUser(Guid userId)
+    {
+        _users.Remove(userId);
+    }
+
     public AppVersion GetPreferredAppVersion(Guid userId)
     {
         return _users[userId].PreferredAppVersion;

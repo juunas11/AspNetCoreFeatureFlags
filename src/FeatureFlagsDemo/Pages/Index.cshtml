@@ -9,7 +9,7 @@
 @if (!Model.UserId.HasValue)
 {
     <form asp-controller="User" asp-action="Signup" method="post">
-        <button type="submit" class="btn btn-primary">Sign up</button>
+        <button type="submit" class="btn btn-primary">Create user</button>
     </form>
 }
 else
@@ -45,7 +45,7 @@ else
         <hr />
 
         <feature name="@FeatureFlags.Features.UserGreeting">
-            <h3>Hello @Model.UserId.Value!</h3>
+            <h3>Hello user!</h3>
             <p>This is only visible to some users</p>
             <br />
             <br />
@@ -64,5 +64,8 @@ else
         </feature>
 
         <p>Your user id: @Model.UserId.Value</p>
+        <form asp-controller="User" asp-action="RegenerateId" method="post">
+            <button type="submit" class="btn btn-primary">Regenerate id</button>
+        </form>
     </div>
 }
