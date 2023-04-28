@@ -6,6 +6,11 @@ $subscriptionId = $config.subscriptionId
 $resourceGroupName = $config.resourceGroupName
 $webAppCustomDomain = $config.webAppCustomDomain
 
+if ($null -eq $webAppCustomDomain -or $webAppCustomDomain -eq "") {
+    Write-Host "No custom domain specified in config.json. Skipping custom domain deployment."
+    Exit
+}
+
 az account show -s "$subscriptionId" | Out-Null
 if ($LASTEXITCODE -ne 0) {
     az login -t "$tenantId"

@@ -18,9 +18,17 @@ else
         <h2>Feature configuration</h2>
         <strong>Preferred app version</strong>
         <form asp-controller="Feature" asp-action="SetPreferredAppVersion" method="post">
-            <input type="radio" id="Stable" name="appVersion" value="Stable" checked="@(Model.PreferredAppVersion == Data.AppVersion.Stable)" /> <label for="Stable">Stable</label>
-            <input type="radio" id="Beta" name="appVersion" value="Beta" checked="@(Model.PreferredAppVersion == Data.AppVersion.Beta)" /> <label for="Beta">Beta</label>
-            <button type="submit" class="btn btn-primary">Save</button>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" id="Stable" name="appVersion" value="Stable" checked="@(Model.PreferredAppVersion == Data.AppVersion.Stable)" />
+                <label class="form-check-label" for="Stable">Stable</label>
+            </div>
+            
+            <div class="form-check">
+                <input class="form-check-input" type="radio" id="Beta" name="appVersion" value="Beta" checked="@(Model.PreferredAppVersion == Data.AppVersion.Beta)" />
+                <label class="form-check-label" for="Beta">Beta</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="margin-top:8px">Save</button>
         </form>
 
         <hr />
@@ -35,10 +43,12 @@ else
             <form asp-controller="Feature" asp-action="SetOptInFeatures" method="post">
                 @foreach (var (feature, optedIn) in Model.OptInFeatures)
                 {
-                    <input type="checkbox" id="@feature" name="@feature" checked="@optedIn" />
-                    <label for="@feature">@feature</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="@feature" name="@feature" checked="@optedIn" />
+                        <label class="form-check-label" for="@feature">@feature</label>
+                    </div>
                 }
-                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="submit" class="btn btn-primary" style="margin-top:8px">Save</button>
             </form>
         }
 

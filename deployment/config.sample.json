@@ -3,5 +3,6 @@
   "subscriptionId": "",
   "resourceGroupName": "",
   "location": "westeurope",
-  "developerGroupId": ""
+  "developerGroupId": "",
+  "webAppCustomDomain": ""
 }

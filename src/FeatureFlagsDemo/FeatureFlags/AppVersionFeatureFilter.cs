@@ -24,8 +24,6 @@ public class AppVersionFeatureFilter : IFeatureFilter
             return Task.FromResult(false);
         }
 
-        var parameters = context.Parameters.Get<AppVersionFeatureFilterParameters>() ?? new();
-
         var userStore = httpContext.RequestServices.GetRequiredService<InMemoryUserStore>();
         if (!userStore.UserExists(userId.Value))
         {
@@ -34,6 +32,7 @@ public class AppVersionFeatureFilter : IFeatureFilter
 
         var preferredVersion = userStore.GetPreferredAppVersion(userId.Value);
 
+        var parameters = context.Parameters.Get<AppVersionFeatureFilterParameters>() ?? new();
         var status = parameters.GetFeatureStatus(preferredVersion);
 
         var isEnabled = status switch

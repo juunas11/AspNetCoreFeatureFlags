@@ -11,7 +11,7 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 
-$appConfigName = az appconfig list -g $resourceGroupName --query "[].name" -o tsv
+$appConfigName = az appconfig list -g $resourceGroupName --query "[].name" -o tsv --subscription $subscriptionId
 if ($LASTEXITCODE -ne 0) {
     Exit
 }
