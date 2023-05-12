@@ -62,7 +62,7 @@ Pop-Location
 
 Write-Host "Deployment complete."
 
-if ($webAppCustomDomain -ne $null) {
+if ($null -ne $webAppCustomDomain) {
     $webAppDefaultHostName = $mainBicepOutputs.webAppDefaultHostName.value
     $webAppCustomDomainVerificationId = $mainBicepOutputs.webAppCustomDomainVerificationId.value
 
