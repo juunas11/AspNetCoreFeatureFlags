@@ -14,7 +14,7 @@ public class UserPercentageFeatureFilter : IFeatureFilter
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public Task<bool> EvaluateAsync(FeatureFilterEvaluationContext context)
+    public Task<bool> EvaluateAsync(FeatureFilterEvaluationContext context, CancellationToken cancellationToken)
     {
         var parameters = context.Parameters.Get<UserPercentageFeatureFilterParameters>() ?? new();
         var percentage = parameters.Percentage;

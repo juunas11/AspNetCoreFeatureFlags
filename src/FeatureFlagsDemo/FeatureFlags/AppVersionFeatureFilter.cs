@@ -14,7 +14,7 @@ public class AppVersionFeatureFilter : IFeatureFilter
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public Task<bool> EvaluateAsync(FeatureFilterEvaluationContext context)
+    public Task<bool> EvaluateAsync(FeatureFilterEvaluationContext context, CancellationToken cancellationToken)
     {
         var httpContext = _httpContextAccessor.HttpContext;
 
@@ -38,7 +38,7 @@ public class AppVersionFeatureFilter : IFeatureFilter
         var isEnabled = status switch
         {
             FeatureStatus.Enabled => true,
-            FeatureStatus.OptIn => userStore.IsOptedInToFeature(userId.Value, context.FeatureName),
+            FeatureStatus.OptIn => userStore.IsOptedInToFeature(userId.Value, context.FeatureFlagName),
             FeatureStatus.Disabled => false,
             _ => throw new NotImplementedException(),
         };

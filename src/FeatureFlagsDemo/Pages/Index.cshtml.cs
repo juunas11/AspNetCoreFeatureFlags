@@ -8,9 +8,9 @@ namespace FeatureFlagsDemo.Pages;
 public class IndexModel : PageModel
 {
     private readonly InMemoryUserStore _userStore;
-    private readonly IFeatureDefinitionProvider _featureDefinitionProvider;
+    private readonly IFeatureFlagDefinitionProvider _featureDefinitionProvider;
 
-    public IndexModel(InMemoryUserStore userStore, IFeatureDefinitionProvider featureDefinitionProvider)
+    public IndexModel(InMemoryUserStore userStore, IFeatureFlagDefinitionProvider featureDefinitionProvider)
     {
         _userStore = userStore;
         _featureDefinitionProvider = featureDefinitionProvider;
@@ -34,7 +34,7 @@ public class IndexModel : PageModel
         if (userId.HasValue)
         {
             PreferredAppVersion = _userStore.GetPreferredAppVersion(userId.Value);
-            await foreach(var definition in _featureDefinitionProvider.GetAllFeatureDefinitionsAsync())
+            await foreach(var definition in _featureDefinitionProvider.GetAllFeatureFlagDefinitionsAsync())
             {
                 var filterConfig = definition.EnabledFor.FirstOrDefault(x => x.Name == "AppVersion");
                 if (filterConfig == null)

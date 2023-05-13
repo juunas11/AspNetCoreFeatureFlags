@@ -30,7 +30,7 @@ public class FeatureController : Controller
     {
         var userId = HttpContext.GetUserId();
 
-        await foreach (var feature in _featureManager.GetFeatureNamesAsync())
+        await foreach (var feature in _featureManager.GetFeatureFlagNamesAsync())
         {
             if (features.ContainsKey(feature))
             {
